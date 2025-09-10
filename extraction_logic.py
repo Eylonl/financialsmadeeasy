@@ -89,13 +89,27 @@ def process_reconciliation_extraction(exhibit_results, recon_threshold, st):
         good_candidates = []
         
         for score in exhibit_results.get('scores', []):
-            st.write(f"🔍 **Table {score.table_id}:** Score={score.recon_score:.1f}, Candidate={score.recon_candidate}")
-            st.write(f"   Rationale: {score.recon_rationale[:3]}")  # First 3 reasons
-            if score.recon_candidate and score.recon_score > recon_threshold:
+            # Handle both ReconScore objects and dictionaries
+            if hasattr(score, 'table_id'):
+                # ReconScore object
+                table_id = score.table_id
+                recon_score = score.recon_score
+                recon_candidate = score.recon_candidate
+                recon_rationale = score.recon_rationale
+            else:
+                # Dictionary
+                table_id = score.get('table_id')
+                recon_score = score.get('recon_score')
+                recon_candidate = score.get('recon_candidate')
+                recon_rationale = score.get('recon_rationale', [])
+            
+            st.write(f"🔍 **Table {table_id}:** Score={recon_score:.1f}, Candidate={recon_candidate}")
+            st.write(f"   Rationale: {recon_rationale[:3]}")  # First 3 reasons
+            if recon_candidate and recon_score > recon_threshold:
                 # Find corresponding table
                 for table in exhibit_results['candidate_tables']:
-                    if table.get('table_id') == score.table_id:
-                        good_candidates.append((table, score.recon_score))
+                    if table.get('table_id') == table_id:
+                        good_candidates.append((table, recon_score))
                         break
         
         # Sort by score, highest first

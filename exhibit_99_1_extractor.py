@@ -5,13 +5,26 @@ Main orchestrator for the robust table extraction system
 from typing import Dict, List, Any, Optional
 from pathlib import Path
 
-# Import all modules
-from extractors.html_tables import HTMLTableExtractor
-from extractors.recon_classifier import ReconciliationClassifier, classify_reconciliation_tables
+# Flat imports like your working app - no subdirectories
+import sys
+import os
+
+# Add subdirectories to Python path for deployment
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.extend([
+    current_dir,
+    os.path.join(current_dir, 'extractors'),
+    os.path.join(current_dir, 'normalizers'), 
+    os.path.join(current_dir, 'outputs')
+])
+
+# Import directly from module names (no subdirectory prefixes)
+from html_tables import HTMLTableExtractor
+from recon_classifier import ReconciliationClassifier, classify_reconciliation_tables
 from normalizers.numbers import normalize_table_numbers
-from normalizers.periods import add_period_info_to_table
-from normalizers.vocab import VocabularyNormalizer
-from outputs.json_writer import write_extraction_results
+from periods import add_period_info_to_table
+from vocab import VocabularyNormalizer
+from json_writer import write_extraction_results
 
 
 class Exhibit99Extractor:

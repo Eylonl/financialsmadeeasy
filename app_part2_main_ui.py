@@ -5,6 +5,7 @@ import streamlit as st
 import os
 from sec_edgar import SECEdgar
 from excel_exporter import ExcelExporter
+from openai import OpenAI
 
 # Page configuration - only set if not already configured
 try:
@@ -21,11 +22,41 @@ def main():
     st.title("📊 Financial Statements Extractor")
     st.markdown("Extract Income Statement, Balance Sheet, and Cash Flow Statement from SEC 10-K/10-Q filings")
     
-    # Check for OpenAI API key
-    if not os.getenv("OPENAI_API_KEY"):
-        st.error("⚠️ OpenAI API key not found. Please set OPENAI_API_KEY in your .env file.")
-        st.info("Copy `.env.template` to `.env` and add your OpenAI API key.")
-        return
+    # API Key Management with Password Protection
+    st.sidebar.header("🔐 API Configuration")
+    
+    # Password for using hosted API key
+    app_password = st.sidebar.text_input("Enter app password to use hosted OpenAI key:", type="password", key="app_password")
+    
+    # Option to use own API key
+    use_own_key = st.sidebar.checkbox("Use my own OpenAI API key instead")
+    
+    if use_own_key:
+        user_openai_key = st.sidebar.text_input("Enter your OpenAI API key:", type="password", key="user_openai_key")
+        if user_openai_key:
+            openai_key = user_openai_key
+            os.environ["OPENAI_API_KEY"] = openai_key  # Set for other modules
+        else:
+            st.error("Please enter your OpenAI API key to continue")
+            st.stop()
+    else:
+        # Check password for hosted key
+        try:
+            hosted_key = st.secrets["OPENAI_API_KEY"]
+            correct_password = st.secrets.get("APP_PASSWORD", "financials2025")  # Default password if not set
+            
+            if app_password == correct_password:
+                openai_key = hosted_key
+                os.environ["OPENAI_API_KEY"] = openai_key  # Set for other modules
+                st.sidebar.success("✅ Using hosted OpenAI key")
+            else:
+                if app_password:  # Only show error if they tried entering a password
+                    st.sidebar.error("❌ Incorrect password")
+                st.error("Please enter the correct app password or use your own OpenAI API key")
+                st.stop()
+        except KeyError:
+            st.error("Hosted OpenAI key not configured. Please use your own API key.")
+            st.stop()
     
     # Input section
     ticker_or_cik = st.text_input(
@@ -37,12 +68,19 @@ def main():
     col1, col2 = st.columns(2)
     
     with col1:
-        model = st.selectbox(
-            "OpenAI Model",
-            options=["gpt-4o-mini", "gpt-4", "gpt-4-turbo"],
+        openai_models = {
+            "GPT-4o Mini": "gpt-4o-mini",
+            "GPT-4 Turbo": "gpt-4-turbo-preview",
+            "GPT-4": "gpt-4",
+            "GPT-3.5 Turbo": "gpt-3.5-turbo"
+        }
+        selected_model = st.selectbox(
+            "Select OpenAI Model",
+            list(openai_models.keys()),
             index=0,
             help="Select the OpenAI model for extraction. GPT-4o-mini is faster and cheaper."
         )
+        model = openai_models[selected_model]
     
     st.info("🚀 Using Enhanced 8-K Exhibit 99.1 Extraction Pipeline - Complete table extraction with reconciliation scoring")
 

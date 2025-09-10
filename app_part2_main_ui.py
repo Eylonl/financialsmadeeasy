@@ -43,7 +43,7 @@ def main():
         # Check password for hosted key
         try:
             hosted_key = st.secrets["OPENAI_API_KEY"]
-            correct_password = st.secrets.get("APP_PASSWORD", "financials2025")  # Default password if not set
+            correct_password = st.secrets.get("APP_PASSWORD", "earnings2025")  # Default password if not set
             
             if app_password == correct_password:
                 openai_key = hosted_key

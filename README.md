@@ -1,73 +1,58 @@
-# Enhanced Financial Analysis App
+# Financial Statements Extractor
 
-A powerful Streamlit application for financial analysis with earnings transcript processing, document analysis, and AI-powered insights.
+A Streamlit application that extracts Income Statement, Balance Sheet, and Cash Flow Statement data from SEC 8-K earnings releases using AI-powered parsing.
 
 ## Features
 
-- **Earnings Transcript Analysis**: Fetch and analyze earnings call transcripts using defeatbeta-api
-- **Document Processing**: Upload and analyze financial documents (PDF, TXT)
-- **AI-Powered Insights**: Generate summaries and extract key information using OpenAI
-- **Data Storage**: Persistent storage with Supabase integration
-- **Interactive UI**: Clean, modern Streamlit interface
+- **SEC 8-K Integration**: Automatically fetch 8-K earnings releases from SEC EDGAR database
+- **AI-Powered Extraction**: Use OpenAI GPT to intelligently extract financial statement data
+- **Multi-Statement Support**: Extract all three core financial statements
+- **Excel Export**: Generate formatted Excel files with separate sheets for each statement
+- **Flexible Timeframes**: Support for "last quarter", "last year", "last 4 quarters", etc.
 
 ## Technology Stack
 
 - **Frontend**: Streamlit
-- **Data Source**: defeatbeta-api (Hugging Face datasets)
+- **Data Source**: SEC EDGAR database
 - **AI**: OpenAI GPT models
-- **Database**: Supabase
-- **Deployment**: Streamlit Community Cloud
+- **Export**: Excel (openpyxl)
 
-## Environment Variables
+## Setup
 
-Add these to your Streamlit Cloud secrets or local `.env` file:
+1. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```
-OPENAI_API_KEY=your_openai_api_key_here
-APP_PASSWORD=your_secure_password_here
-APININJAS_API_KEY=your_apininjas_api_key_here
-SUPABASE_URL=your_supabase_url_here
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
-SUPABASE_BUCKET=documents
-SEC_USER_AGENT=EarningsExtractor/1.0 (+contact: your_email@domain.com)
-```
+2. **Environment Variables**
+   Copy `.env.template` to `.env` and fill in your values:
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   SEC_USER_AGENT=FinancialExtractor/1.0 (+your_email@domain.com)
+   ```
 
-### API Key Security
-
-The app now includes password protection for the hosted OpenAI API key:
-
-- **Option 1**: Enter the app password to use the hosted OpenAI key
-- **Option 2**: Check "Use my own OpenAI API key" and enter your own key
-
-This prevents unauthorized usage of your OpenAI credits while still allowing legitimate users access.
-
-## Local Development
-
-1. Clone the repository
-2. Install dependencies: `pip install -r requirements.txt`
-3. Set up environment variables in `.env` file
-4. Run the app: `streamlit run streamlit_app_enhanced.py`
-
-## Cloud Deployment
-
-This app is deployed on Streamlit Community Cloud and automatically syncs with GitHub commits.
-
-### Deployment URL
-[Your app will be available here after deployment]
+3. **Run Locally**
+   ```bash
+   streamlit run streamlit_app.py
+   ```
 
 ## Usage
 
-1. **Transcript Analysis**: Enter a stock ticker to fetch earnings transcripts
-2. **Document Upload**: Upload financial documents for analysis
-3. **AI Analysis**: Get AI-powered insights and summaries
-4. **Data Export**: Download results in various formats
+1. Enter a stock ticker (e.g., AAPL, MSFT, GOOGL)
+2. Select timeframe (Last Year, Last 2 Years, Last 4 Quarters)
+3. Click "Extract Financial Statements"
+4. Download the generated Excel file
+
+## Output Format
+
+The Excel file contains four sheets:
+- **Income Statement**: Revenue, expenses, net income data
+- **Balance Sheet**: Assets, liabilities, equity data  
+- **Cash Flow Statement**: Operating, investing, financing cash flows
+- **Summary**: Key metrics and ratios
 
 ## Requirements
 
 - Python 3.8+
 - OpenAI API key
-- Supabase account (for data storage)
-
-## License
-
-MIT License
+- Internet connection for SEC EDGAR access

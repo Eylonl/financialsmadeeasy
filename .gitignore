@@ -60,6 +60,18 @@ secrets.toml
 temp/
 tmp/
 
-# Test files
-test_*.py
-*_test.py
+# Test files (temporarily disabled)
+# test_*.py
+# *_test.py
+
+# Output files and cache
+outputs/
+test_outputs/
+extraction_cache/
+*.pkl
+
+# Exclude specific output files but keep README
+!README.md
+test_outputs/*.json
+test_outputs/*.html
+test_outputs/*.md

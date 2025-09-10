@@ -2,6 +2,7 @@
 Part 2: Main UI and Configuration
 """
 import streamlit as st
+import os
 
 # Page configuration - only set if not already configured
 try:

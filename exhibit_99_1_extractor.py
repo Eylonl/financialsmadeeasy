@@ -107,9 +107,17 @@ class Exhibit99Extractor:
         
         # Step 6: Generate JSON outputs
         print("Step 6: Writing JSON outputs...")
+        # Convert ReconScore objects to dictionaries for JSON serialization
+        serializable_scores = []
+        for score in all_scores:
+            if hasattr(score, 'to_dict'):
+                serializable_scores.append(score.to_dict())
+            else:
+                serializable_scores.append(score)
+        
         json_files = write_extraction_results(
             fully_normalized_tables, 
-            all_scores, 
+            serializable_scores, 
             candidate_tables, 
             filing_id, 
             str(self.output_dir)

@@ -14,6 +14,15 @@ class ReconScore:
     recon_score: float
     recon_candidate: bool
     recon_rationale: List[str]
+    
+    def to_dict(self):
+        """Convert to dictionary for JSON serialization"""
+        return {
+            'table_id': self.table_id,
+            'recon_score': self.recon_score,
+            'recon_candidate': self.recon_candidate,
+            'recon_rationale': self.recon_rationale
+        }
 
 
 class ReconciliationClassifier:

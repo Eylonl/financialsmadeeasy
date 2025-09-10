@@ -136,7 +136,7 @@ class Exhibit99Extractor:
             "reconciliation_candidates": len(candidate_tables),
             "tables": fully_normalized_tables,
             "candidate_tables": candidate_tables,
-            "scores": all_scores,
+            "scores": serializable_scores,
             "files": all_files
         }
     

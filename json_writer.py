@@ -9,7 +9,7 @@ from datetime import datetime
 
 def write_extraction_results(
     normalized_tables: List[Dict[str, Any]], 
-    scores: List[Dict[str, Any]], 
+    scores: List[Any], 
     candidate_tables: List[Dict[str, Any]], 
     filing_id: str = None,
     output_dir: str = "outputs"
@@ -19,7 +19,7 @@ def write_extraction_results(
     
     Args:
         normalized_tables: List of normalized table data
-        scores: List of table scores and classifications
+        scores: List of table scores and classifications (can be ReconScore objects or dicts)
         candidate_tables: List of candidate tables found
         filing_id: Filing identifier for output naming
         output_dir: Output directory path
@@ -35,6 +35,16 @@ def write_extraction_results(
     base_name = filing_id or f"extraction_{timestamp}"
     
     json_files = {}
+    
+    # Convert ReconScore objects to dictionaries for JSON serialization
+    serializable_scores = []
+    for score in scores:
+        if hasattr(score, 'to_dict'):
+            # ReconScore object
+            serializable_scores.append(score.to_dict())
+        else:
+            # Already a dictionary
+            serializable_scores.append(score)
     
     # Write normalized tables
     tables_file = output_path / f"tables_{base_name}.json"
@@ -53,7 +63,7 @@ def write_extraction_results(
             "filing_id": filing_id,
             "extraction_timestamp": timestamp,
             "candidate_tables": candidate_tables,
-            "scores": scores
+            "scores": serializable_scores
         }, f, indent=2, ensure_ascii=False)
     json_files['reconciliation'] = str(recon_file)
     

@@ -3,6 +3,8 @@ Part 2: Main UI and Configuration
 """
 import streamlit as st
 import os
+from sec_edgar import SECEdgar
+from excel_exporter import ExcelExporter
 
 # Page configuration - only set if not already configured
 try:

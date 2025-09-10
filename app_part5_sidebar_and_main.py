@@ -2,6 +2,8 @@
 Part 5: Sidebar Information and Main Function Entry Point
 """
 
+import streamlit as st
+
 # Sidebar with information
 with st.sidebar:
     st.header("ℹ️ About")

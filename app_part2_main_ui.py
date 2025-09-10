@@ -1,6 +1,7 @@
 """
 Part 2: Main UI and Configuration
 """
+import streamlit as st
 
 # Page configuration - only set if not already configured
 try:
